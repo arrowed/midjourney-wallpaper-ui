@@ -1,30 +1,36 @@
 import React, { useEffect, useState } from 'react';
-
+import { io } from "socket.io-client";
 
 const WebSocketApp = () => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [connection, setConnection] = useState(null);
+  
 
   useEffect(() => {
     // WebSocket connection setup
-    var W3CWebSocket = require('websocket').w3cwebsocket;
+    const wsConnection = io("ws://localhost:8080");
 
-    var wsConnection = new W3CWebSocket('ws://localhost:8080/', 'echo-protocol');
-
-    wsConnection.onopen = () => {
+    wsConnection.on("connect", () => {
       console.log('WebSocket connection opened');
-    };
+    });
 
-    wsConnection.onmessage = (event) => {
-      const newMessages = [...messages, event.data];
-      setMessages(newMessages);
-    };
+      wsConnection.on("packet", ({ type, data }) => {
+        const newMessages = [...messages, type];
+        setMessages(newMessages);
+      });
 
-    wsConnection.onclose = () => {
+      wsConnection.onAny((eventName, ...args) => {
+        const newMessages = [...messages, eventName];
+        setMessages(newMessages);
+      });
+
+    wsConnection.on("disconnect", () => {
       console.log('WebSocket connection closed');
-    };
+    });
 
+
+    wsConnection.emit("hi")
     setConnection(wsConnection);
 
     // Cleanup on component unmount
@@ -35,7 +41,7 @@ const WebSocketApp = () => {
 
   const sendMessage = () => {
     if (connection && inputMessage.trim() !== '') {
-      connection.send(inputMessage);
+      connection.emit(inputMessage);
       setInputMessage('');
     }
   };
