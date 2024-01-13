@@ -43,25 +43,32 @@ const WebSocketApp = () => {
 
   return (
     <div>
-      <div>
-          {focussed[0] && 
-            <img alt={ focussed[0]['image']['data_path']}
-              src={"http://localhost:8080/image/" + focussed[0]['image']['data_path']} 
-              height="80%"
-              />
-            }
+      <ul>
+        <li> 
+          {//hero
+          focussed[0] && 
+              <img alt={ focussed[0]['image']['data_path']}
+                    src={"http://localhost:8080/image/" + focussed[0]['image']['data_path']} 
+                    max-height= "100%"
+                    min-width= "100%"
+                    width="1000px"
+                    height="auto"
+                    loading="lazy"
+                    />
+          }
+        </li>
+
+        { other.slice(0, 10).map((message, index) => (
+            <li>
+              <img alt={message['image']['data_path']}
+                src={"http://localhost:8080/image/" + message['image']['data_path']} 
+                loading="lazy"
+                onClick={() => setHero(message)}
+                />
+            </li>
+          ))}
+        </ul>
       </div>
-      <div>
-        {other.slice(0, 10).map((message, index) => (
-            <img alt={message['image']['data_path']}
-              src={"http://localhost:8080/image/" + message['image']['data_path']} 
-              width="10%"
-              height="10%" 
-              onClick={() => setHero(message)}
-              />
-        ))}
-      </div>
-    </div>
   );
 };
 
