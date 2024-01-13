@@ -20,17 +20,16 @@ const WebSocketApp = () => {
         setMessages(newMessages);
       });
 
-      wsConnection.onAny((eventName, ...args) => {
-        const newMessages = [...messages, eventName];
-        setMessages(newMessages);
-      });
+    wsConnection.onAny((eventName, ...args) => {
+      const newMessages = [args[0], ...messages];
+      console.log(args);
+      setMessages(newMessages);
+    });
 
     wsConnection.on("disconnect", () => {
       console.log('WebSocket connection closed');
     });
 
-
-    wsConnection.emit("hi")
     setConnection(wsConnection);
 
     // Cleanup on component unmount
@@ -53,7 +52,10 @@ const WebSocketApp = () => {
         <h2>Messages:</h2>
         <ul>
           {messages.map((message, index) => (
-            <li key={index}>{message}</li>
+            <li key={index}>{message['image']['data_path']}
+              <img alt={message['image']['data_path']}
+                src={"http://localhost:8080/image/" + message['image']['data_path']} />
+            </li>
           ))}
         </ul>
       </div>
