@@ -28,5 +28,5 @@ Useful to build without toolchain locally, and/or to a different output path
 
 ```sh
 podman build -f ci/Dockerfile -t midjourney_ui_builder
-podman run -it -v /path/to/result midjourney_ui_builder:/app/public midjourney_ui_builder
+podman run -it -v /path/to/result:/app/build midjourney_ui_builder:/app/public midjourney_ui_builder
 ```
